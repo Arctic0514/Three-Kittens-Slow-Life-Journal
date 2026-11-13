@@ -151,122 +151,6 @@
     width: 70px;
     height: 70px;
   }
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-  }
-
-  html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #2B1E23;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
-    color: var(--text-dark);
-    touch-action: none;
-  }
-
-  #app-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    max-width: 480px;
-    margin: 0 auto;
-    background: var(--bg-cream);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 0 35px rgba(0, 0, 0, 0.5);
-  }
-
-  /* Screens */
-  .screen {
-    position: absolute;
-    inset: 0;
-    display: none;
-    flex-direction: column;
-    background: var(--bg-cream);
-    z-index: 10;
-  }
-  .screen.active {
-    display: flex;
-  }
-
-  /* Start Screen */
-  #start-screen {
-    background: linear-gradient(180deg, #FFE5EC 0%, #FFF8F0 55%, #E8F8F5 100%);
-    padding: 16px;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-  }
-
-  .title-badge {
-    background: #FFF;
-    border: 3px solid var(--primary);
-    border-radius: 24px;
-    padding: 10px 18px;
-    box-shadow: 0 6px 0 var(--secondary);
-    margin-top: 4px;
-    width: 100%;
-  }
-  .title-badge h1 {
-    font-size: 1.35rem;
-    color: var(--primary-dark);
-    letter-spacing: 1px;
-    line-height: 1.3;
-  }
-  .title-badge p {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-top: 3px;
-    font-weight: 600;
-  }
-
-  .breed-select-box {
-    width: 100%;
-    background: rgba(255,255,255,0.85);
-    border-radius: 20px;
-    padding: 12px 10px;
-    border: 2px solid #FFD6E0;
-  }
-  .breed-select-box h2 {
-    font-size: 0.95rem;
-    margin-bottom: 10px;
-    color: var(--text-dark);
-  }
-
-  .breed-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-  .breed-card {
-    background: #FFF;
-    border: 3px solid #E5D4DA;
-    border-radius: 16px;
-    padding: 8px 4px;
-    cursor: pointer;
-    transition: transform 0.15s, border-color 0.15s, background 0.15s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .breed-card.selected {
-    border-color: var(--primary-dark);
-    background: #FFF0F3;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 12px rgba(201, 24, 74, 0.2);
-  }
-  .breed-card canvas {
-    width: 76px;
-    height: 76px;
-  }
   .breed-name {
     font-weight: 700;
     font-size: 0.9rem;
@@ -456,6 +340,12 @@
     background: #FFF8F0;
   }
   #room-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+  }
+
   /* Floating Snack Quick Bar - stacked cleanly for iPhone 12 Pro Max / 13 Pro width */
   #quick-treat-bar {
     position: absolute;
@@ -556,6 +446,9 @@
   .workshop-row {
     display: grid;
     grid-template-columns: 1.7fr 1fr 1fr;
+    gap: 6px;
+  }
+
   /* Workshop & Wardrobe Drawer Modal - Safe area aware */
   .modal-overlay {
     position: absolute;
@@ -569,7 +462,7 @@
     padding-bottom: calc(12px + var(--safe-bottom));
     padding-left: 12px;
     padding-right: 12px;
-    z-index: 30;
+    z-index: 100;
   }
   .modal-overlay.active {
     display: flex;
@@ -701,6 +594,10 @@
     color: #FFF;
   }
   .shop-act-btn.equipped-btn {
+    background: #E2E8F0;
+    color: #475569;
+  }
+
   /* Toast notification - Positioned safely below Dynamic Island & HUD */
   #toast-msg {
     position: absolute;
@@ -783,7 +680,10 @@
 
     <div class="btn-group">
       <button class="btn btn-primary" id="btn-start-game">🚀 進入 2.5D 貓咪小屋</button>
-      <button class="btn btn-secondary" id="btn-mute-start">🔊 音效：開</button>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+        <button class="btn btn-secondary" id="btn-open-save-start" style="font-size:0.9rem; padding:10px;">💾 匯出/匯入存檔</button>
+        <button class="btn btn-secondary" id="btn-mute-start" style="font-size:0.9rem; padding:10px;">🔊 音效：開</button>
+      </div>
     </div>
   </section>
 
@@ -797,6 +697,7 @@
           <span class="call-alert-pill" id="hud-call-alert">🔔 呼叫中!</span>
         </div>
         <div class="hud-icons">
+          <button class="icon-btn" id="btn-open-save-main" title="匯出或匯入存檔">💾 存檔</button>
           <button class="icon-btn" id="btn-switch-cat" title="保存並切換其他貓咪">🐾 換貓</button>
           <button class="icon-btn" id="btn-mute-main" title="切換靜音">🔊</button>
         </div>
@@ -826,12 +727,12 @@
     <div id="stage-container">
       <canvas id="room-canvas"></canvas>
       <div id="quick-treat-bar">
-        <div class="floating-hint" id="cat-status-bubble" style="width:100%; text-align:left;">💬 在貓身上拖曳可「撫摸」，點「🪮梳子」或「🧶玩具」可互動！</div>
+        <div class="floating-hint" id="cat-status-bubble" style="width:100%; text-align:left;">💬 點擊家具再按「🔄 轉向」可旋轉方向；在貓身上拖曳可撫摸！</div>
         <div style="display:flex; gap:4px; pointer-events:auto; flex-wrap:wrap; justify-content:flex-end;">
           <button class="floating-hint" id="btn-toggle-toy" style="cursor:pointer; background:#FCE7F3; border-color:#F472B6; color:#9D174D;">🧶 拿玩具</button>
           <button class="floating-hint" id="btn-toggle-brush" style="cursor:pointer; background:#FEF3C7; border-color:#F59E0B; color:#B45309;">🪮 拿起梳子</button>
-          <button class="floating-hint" id="btn-rotate-sel" style="cursor:pointer; display:none; background:#E0F2FE; border-color:#38BDF8; color:#0369A1;">🔄 轉向</button>
-          <button class="floating-hint" id="btn-store-sel" style="cursor:pointer; display:none; background:#FEE2E2; border-color:#EF4444; color:#B91C1C;">📦 收起</button>
+          <button class="floating-hint" id="btn-rotate-sel" style="cursor:pointer; background:#E0F2FE; border-color:#38BDF8; color:#0369A1;">🔄 轉向</button>
+          <button class="floating-hint" id="btn-store-sel" style="cursor:pointer; background:#FEE2E2; border-color:#EF4444; color:#B91C1C;">📦 收起</button>
           <button class="floating-hint" id="btn-toggle-drag" style="cursor:pointer; background:#FFF0F3; color:#C9184A;">🔨 移家具：開</button>
           <button class="floating-hint" id="btn-move-cat-mode" style="cursor:pointer;">🖐️ 抱貓：關</button>
         </div>
@@ -913,6 +814,36 @@
         <button class="tab-btn" data-cat="treat">🍮零食</button>
       </div>
       <div class="workshop-list" id="workshop-items-container"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: SAVE EXPORT / IMPORT MANAGER ==================== -->
+  <div class="modal-overlay" id="modal-save-manager">
+    <div class="modal-card" style="max-height:86%;">
+      <div class="modal-header">
+        <h3>💾 存檔管理（匯出／匯入三隻貓全進度）</h3>
+        <button class="close-btn" id="btn-close-save-modal">關閉 ✕</button>
+      </div>
+      <div class="help-content" style="display:flex; flex-direction:column; gap:10px;">
+        <p style="font-size:0.78rem; color:var(--text-muted);">
+          可將目前<strong>條紋虎斑、暖陽橘喵、神秘黑喵</strong>三隻小貓的完整進度（愛心、成長階段、已購服飾、2.5D房間家具擺設）匯出成存檔代碼或檔案，隨時跨裝置或重新開啟時匯入還原！
+        </p>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+          <button class="btn btn-primary" id="btn-export-copy" style="font-size:0.82rem; padding:10px 8px;">📋 匯出並複製代碼</button>
+          <button class="btn btn-secondary" id="btn-export-file" style="font-size:0.82rem; padding:10px 8px;">📥 下載存檔 (.json)</button>
+        </div>
+
+        <textarea id="save-code-textarea" rows="4" placeholder="點上方「匯出並複製代碼」會產生存檔碼；若要匯入，請在此貼上存檔碼後點下方「讀取存檔碼」..." style="width:100%; border:2px solid #FFB3C6; border-radius:12px; padding:8px; font-size:0.75rem; font-family:monospace; color:var(--text-dark); background:#FFF9FB; resize:none; user-select:text; -webkit-user-select:text;"></textarea>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+          <button class="btn btn-mint" id="btn-import-code" style="font-size:0.82rem; padding:10px 8px;">📤 貼上代碼匯入</button>
+          <label class="btn btn-secondary" style="font-size:0.82rem; padding:10px 8px; cursor:pointer; text-align:center;">
+            📂 選擇存檔檔匯入
+            <input type="file" id="input-import-file" accept=".json,application/json,text/plain" style="display:none;">
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1136,14 +1067,14 @@
     clean: 80,
     mood: 80,
     energy: 85,
-    isSleeping: false, // Light switched off
+    isSleeping: false,
     isSick: false,
     isPassedAway: false,
     generation: 1,
     poops: [],
-    inventory: { fur_rug: 1, toy_yarn: 1 }, // itemId -> count owned (starts with 1 yarn ball!)
+    inventory: { fur_rug: 1, toy_yarn: 1 },
     placedFurniture: [
-      { uid: "inst_rug_init", id: "fur_rug", x: 0.50, y: 0.75, flip: false }
+      { uid: "inst_rug_init", id: "fur_rug", x: 0.50, y: 0.75, flip: false, rot: 0 }
     ],
     selectedFurnUid: null,
     equipped: {
@@ -1153,24 +1084,24 @@
     },
     activeToyId: "toy_yarn",
     catPos: { x: 0.50, y: 0.70 },
-    catPose: "idle", // 'idle', 'walk', 'lie_sleep', 'groom', 'scratch', 'on_tree', 'play_toy'
+    catPose: "idle",
     catActionTimer: 0,
     catFacing: 1,
     interactingFurnUid: null,
     dragMode: true,
-    moveCatMode: false, // False = dragging on cat strokes/brushes/plays; True = dragging moves cat position
-    brushActive: false, // True = holding comb/brush tool
-    toyActive: false, // True = holding interactive cat toy
+    moveCatMode: false,
+    brushActive: false,
+    toyActive: false,
     pointerDownOnCat: false,
     strokeAccumDist: 0,
     lastPointerPos: { x: 0, y: 0 },
     cursorCanvasPos: { x: -100, y: -100, active: false },
-    draggingTarget: null, // { type: 'cat' | 'furn', uid: string }
+    draggingTarget: null,
     dragOffsetX: 0,
     dragOffsetY: 0,
     dragMoved: false,
     treatInventory: 1,
-    currentShopTab: "furniture",
+    currentShopTab: "hat",
     floatingHearts: [],
     floatingTexts: [],
     petAnimTimer: 0,
@@ -1190,21 +1121,18 @@
     return GROWTH_STAGES[0];
   }
 
-  // Hidden internal age in days (not displayed on UI, can exceed 30 days infinitely)
   function getHiddenInternalDays() {
     const elapsedMs = Math.max(0, Date.now() - (STATE.createdAt || Date.now()));
     const realDays = elapsedMs / (1000 * 60 * 60 * 24);
-    const expDays = STATE.exp / 1000; // 1,000 EXP corresponds to 1 day of lifecycle
+    const expDays = STATE.exp / 1000;
     return Math.max(realDays, expDays);
   }
 
-  // Check for random peaceful passing of old age after 30 days
   function checkOldAgePassing() {
     if (STATE.isPassedAway) return;
     const daysLived = getHiddenInternalDays();
-    if (daysLived <= 30) return; // Safe before 30 days
+    if (daysLived <= 30) return;
 
-    // After 30 days, small random probability per life tick, gradually increasing with age beyond 30
     const daysOver30 = daysLived - 30;
     const chance = Math.min(0.08, 0.003 + daysOver30 * 0.0015);
     if (Math.random() < chance) {
@@ -1241,7 +1169,7 @@
       inventory: { fur_rug: 1, toy_yarn: 1 },
       activeToyId: "toy_yarn",
       placedFurniture: [
-        { uid: "inst_rug_init", id: "fur_rug", x: 0.50, y: 0.75, flip: false }
+        { uid: "inst_rug_init", id: "fur_rug", x: 0.50, y: 0.75, flip: false, rot: 0 }
       ],
       equipped: {
         hat: null,
@@ -1324,6 +1252,77 @@
     return null;
   }
 
+  // Export & Import All 3 Kittens' Saves (Base64 Code + JSON File)
+  function buildAllSavesBundle() {
+    if (document.getElementById("game-screen").classList.contains("active")) {
+      saveCurrentBreedState();
+    }
+    const bundle = {
+      app: "three_kittens_journal_v1",
+      exportedAt: Date.now(),
+      currentBreed: STATE.breed,
+      breeds: {}
+    };
+    BREEDS.forEach(b => {
+      const saved = getSavedBreedData(b);
+      if (saved) {
+        bundle.breeds[b] = saved;
+      }
+    });
+    return bundle;
+  }
+
+  function encodeSaveBundle(bundle) {
+    const jsonStr = JSON.stringify(bundle);
+    return btoa(encodeURIComponent(jsonStr));
+  }
+
+  function decodeSaveString(rawStr) {
+    const trimmed = (rawStr || "").trim();
+    if (!trimmed) throw new Error("empty");
+    if (trimmed.startsWith("{")) {
+      return JSON.parse(trimmed);
+    }
+    const jsonStr = decodeURIComponent(atob(trimmed));
+    return JSON.parse(jsonStr);
+  }
+
+  function applyImportedSaveBundle(bundle) {
+    if (!bundle || typeof bundle !== "object" || !bundle.breeds) {
+      SoundSystem.playBad();
+      showToast("❌ 存檔格式不正確，無法匯入！");
+      return false;
+    }
+    let importedCount = 0;
+    BREEDS.forEach(b => {
+      if (bundle.breeds[b] && typeof bundle.breeds[b] === "object") {
+        MEMORY_SAVES[b] = bundle.breeds[b];
+        try {
+          localStorage.setItem(getStorageKey(b), JSON.stringify(bundle.breeds[b]));
+        } catch (e) {}
+        importedCount++;
+      }
+    });
+
+    if (importedCount === 0) {
+      SoundSystem.playBad();
+      showToast("⚠️ 此存檔內沒有有效的貓咪紀錄！");
+      return false;
+    }
+
+    const targetBreed = BREEDS.includes(bundle.currentBreed) ? bundle.currentBreed : STATE.breed;
+    STATE.breed = targetBreed;
+    document.querySelectorAll(".breed-card").forEach(c => {
+      c.classList.toggle("selected", c.getAttribute("data-breed") === STATE.breed);
+    });
+
+    loadBreedState(STATE.breed);
+    renderBreedPreviews();
+    SoundSystem.playUnlock();
+    showToast(`🎉 成功匯入存檔！已還原 ${importedCount} 隻小貓的完整進度！`);
+    return true;
+  }
+
   function loadBreedState(breed) {
     STATE.breed = breed;
     const data = getSavedBreedData(breed) || createFreshBreedData();
@@ -1347,7 +1346,7 @@
     ensureValidActiveToy();
     STATE.placedFurniture = Array.isArray(data.placedFurniture)
       ? JSON.parse(JSON.stringify(data.placedFurniture))
-      : [{ uid: "inst_rug_init", id: "fur_rug", x: 0.50, y: 0.75, flip: false }];
+      : [{ uid: "inst_rug_init", id: "fur_rug", x: 0.50, y: 0.75, flip: false, rot: 0 }];
     STATE.equipped = {
       hat: data.equipped ? data.equipped.hat : null,
       clothes: data.equipped ? data.equipped.clothes : null,
@@ -1361,7 +1360,6 @@
     STATE.catPose = STATE.isSleeping ? "lie_sleep" : "idle";
     STATE.catActionTimer = 4;
 
-    // Offline real-time progression calculation (no cap on total exp so age can exceed 30 days)
     const elapsedSec = Math.max(0, (Date.now() - STATE.lastSaveTime) / 1000);
     if (elapsedSec > 60 && !STATE.isPassedAway) {
       const hoursPassed = Math.min(24, elapsedSec / 3600);
@@ -1404,7 +1402,6 @@
     saveCurrentBreedState();
   }
 
-  // Tightened economy for 30-day longevity: 1~3 hearts per 12s tick
   function calculateIdleHeartRate() {
     const placedBonus = Math.min(3, Math.floor(STATE.placedFurniture.length / 3));
     const moodBonus = STATE.mood >= 85 ? 1 : 0;
@@ -1413,7 +1410,7 @@
 
   function addCatExp(amount) {
     const prevStage = getGrowthStage(STATE.exp);
-    STATE.exp += amount; // Uncapped so cat can age past 30 days
+    STATE.exp += amount;
     const newStage = getGrowthStage(STATE.exp);
     if (newStage.level > prevStage.level) {
       SoundSystem.playFanfare();
@@ -1434,12 +1431,14 @@
     const rotBtn = document.getElementById("btn-rotate-sel");
     const storeBtn = document.getElementById("btn-store-sel");
     if (!rotBtn || !storeBtn) return;
-    if (STATE.selectedFurnUid && STATE.dragMode) {
-      rotBtn.style.display = "inline-block";
-      storeBtn.style.display = "inline-block";
+    rotBtn.style.display = "inline-block";
+    storeBtn.style.display = STATE.selectedFurnUid ? "inline-block" : "none";
+    if (STATE.selectedFurnUid) {
+      const inst = STATE.placedFurniture.find(f => f.uid === STATE.selectedFurnUid);
+      const meta = inst ? CATALOG.find(i => i.id === inst.id) : null;
+      rotBtn.textContent = meta ? `🔄 轉向(${meta.name.slice(0, 3)})` : "🔄 轉向";
     } else {
-      rotBtn.style.display = "none";
-      storeBtn.style.display = "none";
+      rotBtn.textContent = "🔄 轉向";
     }
   }
 
@@ -1551,25 +1550,21 @@
     // Special Pose 1: Curled / Lying Down Sleeping Pose (趴下睡覺)
     if (pose === "lie_sleep") {
       const breath = Math.sin(timeSec * 2.2) * 2.2;
-      // 2.5D Floor Shadow
       ctx.fillStyle = "rgba(0,0,0,0.16)";
       ctx.beginPath();
       ctx.ellipse(0, 56, 62, 18, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Horizontal curled body
       ctx.fillStyle = pal.body;
       ctx.beginPath();
       ctx.ellipse(8, 38 + breath * 0.4, 48, 28 + breath * 0.4, -0.08, 0, Math.PI * 2);
       ctx.fill();
 
-      // Soft belly
       ctx.fillStyle = pal.belly;
       ctx.beginPath();
       ctx.ellipse(4, 46 + breath * 0.4, 30, 14, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Clothes while lying down
       if (equipped && equipped.clothes) {
         ctx.save();
         ctx.translate(10, 12);
@@ -1579,7 +1574,6 @@
         ctx.restore();
       }
 
-      // Curled Tail wrapped around body
       ctx.strokeStyle = pal.body;
       ctx.lineWidth = 13;
       ctx.lineCap = "round";
@@ -1588,7 +1582,6 @@
       ctx.quadraticCurveTo(64, 58, 22, 58);
       ctx.stroke();
 
-      // Tucked Front Paws
       for (let px of [-28, -8]) {
         ctx.fillStyle = pal.belly;
         ctx.beginPath();
@@ -1596,12 +1589,10 @@
         ctx.fill();
       }
 
-      // Lowered Sleeping Head resting on paws
       ctx.save();
       ctx.translate(-24, 18 + breath * 0.7);
       ctx.rotate(-0.15);
 
-      // Ears
       for (let side of [-1, 1]) {
         ctx.fillStyle = pal.body;
         ctx.beginPath();
@@ -1624,7 +1615,6 @@
       ctx.ellipse(0, -4, 42, 33, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Closed sleeping eyes
       for (let side of [-1, 1]) {
         ctx.strokeStyle = breed === "black" ? "#FFF" : "#2B1E23";
         ctx.lineWidth = 3;
@@ -1637,7 +1627,6 @@
         ctx.fill();
       }
 
-      // Nose & Peaceful Mouth
       ctx.fillStyle = pal.nose;
       ctx.beginPath();
       ctx.arc(0, 3, 3.5, 0, Math.PI * 2);
@@ -1648,7 +1637,6 @@
       }
       ctx.restore();
 
-      // Floating Zzz in upright orientation
       ctx.save();
       ctx.scale(facing, 1);
       const zOff = Math.sin(timeSec * 2.8) * 5;
@@ -1668,13 +1656,11 @@
     const playWave = pose === "play_toy" ? Math.sin(timeSec * 18) * 14 : 0;
     const tailAngle = Math.sin(timeSec * (pose === "scratch" || pose === "play_toy" ? 15 : 4)) * (pose === "play_toy" ? 0.45 : 0.28);
 
-    // 2.5D Isometric Shadow
     ctx.fillStyle = "rgba(0,0,0,0.15)";
     ctx.beginPath();
     ctx.ellipse(0, 74, 52 + playBounce * 0.6, 15, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Cape or Dino Spikes behind body
     if (equipped && equipped.clothes === "clo_cape") {
       ctx.fillStyle = "#7209B7";
       ctx.beginPath();
@@ -1699,7 +1685,6 @@
       }
     }
 
-    // Tail
     ctx.save();
     ctx.translate(34, 48 + playBounce);
     ctx.rotate(tailAngle);
@@ -1712,19 +1697,16 @@
     ctx.stroke();
     ctx.restore();
 
-    // Body
     ctx.fillStyle = pal.body;
     ctx.beginPath();
     ctx.ellipse(0, 32 + breath * 0.5 + playBounce - Math.abs(walkSwing) * 0.3, 40, 44, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Belly patch
     ctx.fillStyle = pal.belly;
     ctx.beginPath();
     ctx.ellipse(0, 38 + breath * 0.5 + playBounce, 25, 30, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Body Stripes
     if (breed === "tabby" || breed === "orange") {
       ctx.fillStyle = pal.stripe;
       for (let side of [-1, 1]) {
@@ -1737,12 +1719,10 @@
       }
     }
 
-    // Clothes overlay
     if (equipped && equipped.clothes) {
       drawCatClothes(ctx, equipped.clothes, breath * 0.5 + playBounce);
     }
 
-    // Front Paws / Legs (Animated for walk, scratch, groom, or batting at toys `play_toy`!)
     const pawPositions = [-20, 20];
     pawPositions.forEach((px, idx) => {
       const legOffset = pose === "walk" ? (idx === 0 ? walkSwing : -walkSwing)
@@ -1765,7 +1745,6 @@
       }
     });
 
-    // Draw interactive toy bouncing in front of paws when in `play_toy` pose!
     if (pose === "play_toy") {
       const toyId = (statusFlags && statusFlags.toyId) || "toy_yarn";
       const toyBounceX = Math.sin(timeSec * 10) * 24;
@@ -1773,7 +1752,6 @@
       drawMiniToyProp(ctx, toyId, toyBounceX, 66 + toyBounceY, timeSec);
     }
 
-    // Head Group
     ctx.save();
     const headTilt = pose === "groom" ? 0.22 : pose === "scratch" ? -0.1 : pose === "play_toy" ? Math.sin(timeSec * 10) * 0.16 : 0;
     ctx.translate(0, -24 + breath + playBounce + (pose === "scratch" ? Math.abs(scratchShake) * 0.4 : 0));
@@ -1797,7 +1775,6 @@
       ctx.restore();
     }
 
-    // Left & Right Ears
     for (let side of [-1, 1]) {
       ctx.fillStyle = pal.body;
       ctx.beginPath();
@@ -1816,13 +1793,11 @@
       ctx.fill();
     }
 
-    // Main Head Circle
     ctx.fillStyle = pal.body;
     ctx.beginPath();
     ctx.ellipse(0, -6, 46, 38, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Forehead M stripes
     if (breed === "tabby" || breed === "orange") {
       ctx.strokeStyle = pal.stripe;
       ctx.lineWidth = 3.5;
@@ -1836,7 +1811,6 @@
       ctx.stroke();
     }
 
-    // Eyes
     const blink = (timeSec % 4.2) > 4.0;
     for (let side of [-1, 1]) {
       const ex = side * 18;
@@ -1885,7 +1859,6 @@
       ctx.fill();
     }
 
-    // Nose & Mouth
     ctx.fillStyle = pal.nose;
     ctx.beginPath();
     ctx.moveTo(-5, 1);
@@ -1909,7 +1882,6 @@
     }
     ctx.stroke();
 
-    // Whiskers
     ctx.strokeStyle = breed === "black" ? "rgba(255,255,255,0.65)" : "rgba(74,53,59,0.55)";
     ctx.lineWidth = 1.8;
     for (let side of [-1, 1]) {
@@ -1925,7 +1897,6 @@
       drawCatHat(ctx, equipped.hat, timeSec);
     }
 
-    // Upright Status Indicator
     ctx.save();
     ctx.scale(facing, 1);
     if (isSick) {
@@ -2218,26 +2189,32 @@
       ctx.ellipse(0, 4, 38, 9, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.beginPath();
-      ctx.moveTo(-24, 3);
-      ctx.lineTo(4, -44);
-      ctx.lineTo(24, 3);
+      ctx.moveTo(-22, 4);
+      ctx.lineTo(4, -38);
+      ctx.lineTo(22, 4);
       ctx.closePath();
       ctx.fill();
-      ctx.fillStyle = "#FACC15";
-      ctx.fillRect(-19, -3, 38, 5);
+      ctx.strokeStyle = "#FACC15";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(-20, 1);
+      ctx.lineTo(20, 1);
+      ctx.stroke();
     }
     ctx.restore();
   }
 
-  // 2.5D Isometric Furniture Renderer with Flip (Rotation) Support
+  // 2.5D Isometric Furniture Renderer with 4-Direction Rotation / Flip Support
   function drawSingleFurniture(ctx, inst, x, y, timeSec, isSelected, isDragging) {
     const id = inst.id;
-    const flip = Boolean(inst.flip);
+    const rot = typeof inst.rot === "number" ? inst.rot : (inst.flip ? 1 : 0);
+    const flip = (rot % 2) === 1;
+    const tilt = rot === 2 ? 0.18 : rot === 3 ? -0.18 : 0;
     ctx.save();
     ctx.translate(x, y);
+    ctx.rotate(tilt);
     ctx.scale(flip ? -1 : 1, 1);
 
-    // 2.5D Ground Drop Shadow for standing furniture
     if (id !== "fur_window" && id !== "fur_clock" && id !== "fur_rug") {
       ctx.fillStyle = "rgba(50, 30, 20, 0.16)";
       ctx.beginPath();
@@ -2246,26 +2223,30 @@
     }
 
     if (id === "fur_rug") {
-      // 2.5D Isometric Diamond / Oval Rug
       ctx.fillStyle = "#FF8FA3";
       ctx.beginPath();
-      ctx.ellipse(0, 4, 84, 32, 0.14, 0, Math.PI * 2);
+      ctx.ellipse(0, 4, 84, 32, 0.24, 0, Math.PI * 2);
       ctx.fill();
       ctx.fillStyle = "#FFD6E0";
       ctx.strokeStyle = "#FF4D6D";
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.ellipse(0, 0, 82, 30, 0.14, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, 82, 30, 0.24, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
       ctx.strokeStyle = "#FFF0F3";
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.ellipse(0, 0, 62, 20, 0.14, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, 62, 20, 0.24, 0, Math.PI * 2);
       ctx.stroke();
+      ctx.fillStyle = "#FF4D6D";
+      ctx.beginPath();
+      ctx.arc(34, 4, 7, 0, Math.PI * 2);
+      ctx.arc(26, -5, 3.5, 0, Math.PI * 2);
+      ctx.arc(34, -7, 3.5, 0, Math.PI * 2);
+      ctx.arc(42, -4, 3.5, 0, Math.PI * 2);
+      ctx.fill();
     } else if (id === "fur_scratcher") {
-      // 2.5D Corrugated Cardboard Cat Scratcher Board (貓抓板)
-      // Side 3D thickness
       ctx.fillStyle = "#B07D4F";
       ctx.strokeStyle = "#7F5539";
       ctx.lineWidth = 2.5;
@@ -2279,7 +2260,6 @@
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      // Top corrugated scratching surface
       ctx.fillStyle = "#E6CCB2";
       ctx.beginPath();
       ctx.moveTo(-42, 4);
@@ -2289,7 +2269,6 @@
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      // Scratch texture lines
       ctx.strokeStyle = "#9C6644";
       ctx.lineWidth = 1.5;
       for (let t = -25; t <= 15; t += 8) {
@@ -2299,7 +2278,6 @@
         ctx.stroke();
       }
     } else if (id === "fur_bed") {
-      // 2.5D Plush Cat Bed
       ctx.fillStyle = "#E76F51";
       ctx.beginPath();
       ctx.ellipse(0, 12, 54, 24, 0, 0, Math.PI * 2);
@@ -2320,8 +2298,6 @@
       ctx.roundRect(-30, -7, 22, 13, 6);
       ctx.fill();
     } else if (id === "fur_cabinet") {
-      // 2.5D Isometric Low Wooden Storage Cabinet (立體收納矮櫃 - 可轉向)
-      // Top face
       ctx.fillStyle = "#E6CCB2";
       ctx.strokeStyle = "#7F5539";
       ctx.lineWidth = 2.5;
@@ -2333,7 +2309,6 @@
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      // Left side face
       ctx.fillStyle = "#B08968";
       ctx.beginPath();
       ctx.moveTo(-42, -24);
@@ -2343,7 +2318,6 @@
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      // Right front drawer face
       ctx.fillStyle = "#DDB892";
       ctx.beginPath();
       ctx.moveTo(-4, -6);
@@ -2353,7 +2327,6 @@
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      // Drawers & handles on front face
       ctx.beginPath();
       ctx.moveTo(-4, 14);
       ctx.lineTo(42, -4);
@@ -2364,8 +2337,6 @@
       ctx.arc(19, 13, 3.5, 0, Math.PI * 2);
       ctx.fill();
     } else if (id === "fur_wardrobe") {
-      // 2.5D Isometric Tall Wooden Wardrobe (木質大衣櫥 - 可轉向)
-      // Top roof face
       ctx.fillStyle = "#E6CCB2";
       ctx.strokeStyle = "#7F5539";
       ctx.lineWidth = 2.5;
@@ -2377,7 +2348,6 @@
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      // Left side panel (depth)
       ctx.fillStyle = "#9C6644";
       ctx.beginPath();
       ctx.moveTo(-44, -56);
@@ -2387,7 +2357,6 @@
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      // Right front double-door panel
       ctx.fillStyle = "#D4A373";
       ctx.beginPath();
       ctx.moveTo(-2, -38);
@@ -2397,7 +2366,6 @@
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      // Center door split & golden handles
       ctx.beginPath();
       ctx.moveTo(20, -47);
       ctx.lineTo(20, 33);
@@ -2430,8 +2398,6 @@
       ctx.textAlign = "center";
       ctx.fillText("🌙", 0, -16);
     } else if (id === "fur_tree") {
-      // 2.5D Isometric Multi-Level Cat Tree
-      // Isometric base board
       ctx.fillStyle = "#B08968";
       ctx.strokeStyle = "#7F5539";
       ctx.lineWidth = 2.5;
@@ -2443,23 +2409,19 @@
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      // Sisal pillar
       ctx.fillStyle = "#D4A373";
       ctx.fillRect(-9, -56, 18, 90);
       ctx.strokeRect(-9, -56, 18, 90);
-      // Mid platform
       ctx.fillStyle = "#FFB5A7";
       ctx.beginPath();
       ctx.roundRect(-30, -14, 58, 14, 7);
       ctx.fill();
       ctx.stroke();
-      // Top observation bed platform (where cat jumps onto!)
       ctx.fillStyle = "#FF8FA3";
       ctx.beginPath();
       ctx.roundRect(-38, -68, 76, 18, 9);
       ctx.fill();
       ctx.stroke();
-      // Dangling toy ball
       const swing = Math.sin(timeSec * 4) * 5;
       ctx.strokeStyle = "#6D597A";
       ctx.lineWidth = 2;
@@ -2472,7 +2434,6 @@
       ctx.arc(-26 + swing, -22, 7, 0, Math.PI * 2);
       ctx.fill();
     } else if (id === "fur_window") {
-      // 2.5D Angled Wall Window (slanted along wall perspective)
       ctx.save();
       ctx.transform(1, -0.24, 0, 1, 0, 0);
       ctx.fillStyle = "#BAE6FD";
@@ -2537,6 +2498,7 @@
 
     if (isSelected || isDragging) {
       const meta = CATALOG.find(i => i.id === id);
+      const dirLabels = ["左牆向", "右牆向", "斜向A", "斜向B"];
       ctx.save();
       ctx.translate(x, y);
       ctx.strokeStyle = isDragging ? "#F59E0B" : "#7209B7";
@@ -2549,12 +2511,12 @@
       if (meta) {
         ctx.fillStyle = "rgba(43, 30, 35, 0.9)";
         ctx.beginPath();
-        ctx.roundRect(-58, -72, 116, 22, 8);
+        ctx.roundRect(-64, -72, 128, 22, 8);
         ctx.fill();
         ctx.fillStyle = "#FFF";
         ctx.font = "bold 11px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(`${meta.name} (${flip ? "右向" : "左向"})`, 0, -57);
+        ctx.fillText(`${meta.name} (${dirLabels[rot % 4]})`, 0, -57);
       }
       ctx.restore();
     }
@@ -2567,7 +2529,6 @@
     const leftWallBottomY = h * 0.64;
     const rightWallBottomY = h * 0.64;
 
-    // 1. Left Wall (2.5D Perspective)
     ctx.fillStyle = "#FFE5EC";
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -2577,7 +2538,6 @@
     ctx.closePath();
     ctx.fill();
 
-    // Left Wall Stripes
     ctx.fillStyle = "rgba(255, 143, 163, 0.16)";
     for (let x = 16; x < cornerX; x += 34) {
       const yBottom = leftWallBottomY - (x / cornerX) * (leftWallBottomY - cornerY);
@@ -2590,7 +2550,6 @@
       ctx.fill();
     }
 
-    // 2. Right Wall (2.5D Slightly Shaded Perspective)
     ctx.fillStyle = "#FDE2E8";
     ctx.beginPath();
     ctx.moveTo(cornerX, 0);
@@ -2613,7 +2572,6 @@
       ctx.fill();
     }
 
-    // Center Corner Line & Baseboards
     ctx.strokeStyle = "#E5B8C5";
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -2621,7 +2579,6 @@
     ctx.lineTo(cornerX, cornerY);
     ctx.stroke();
 
-    // 3. 2.5D Isometric Diamond Wood Floor
     ctx.fillStyle = "#F3DFC8";
     ctx.beginPath();
     ctx.moveTo(0, leftWallBottomY);
@@ -2632,23 +2589,19 @@
     ctx.closePath();
     ctx.fill();
 
-    // 2.5D Isometric Floor Plank Grid
     ctx.strokeStyle = "rgba(186, 145, 104, 0.36)";
     ctx.lineWidth = 1.5;
     for (let i = -8; i <= 12; i++) {
-      // Planks parallel to left wall
       ctx.beginPath();
       ctx.moveTo(cornerX + i * 42, cornerY + Math.abs(i) * 8);
       ctx.lineTo(cornerX + i * 42 - w * 0.7, cornerY + Math.abs(i) * 8 + h * 0.45);
       ctx.stroke();
-      // Planks parallel to right wall
       ctx.beginPath();
       ctx.moveTo(cornerX + i * 42, cornerY + Math.abs(i) * 8);
       ctx.lineTo(cornerX + i * 42 + w * 0.7, cornerY + Math.abs(i) * 8 + h * 0.45);
       ctx.stroke();
     }
 
-    // 2.5D Baseboard Trim
     ctx.strokeStyle = "#F4ACB7";
     ctx.lineWidth = 8;
     ctx.beginPath();
@@ -2657,7 +2610,6 @@
     ctx.lineTo(w, rightWallBottomY);
     ctx.stroke();
 
-    // Build render queue sorted by layer & Y coordinate for true 2.5D depth sorting
     const renderList = [];
     STATE.placedFurniture.forEach(inst => {
       const meta = CATALOG.find(i => i.id === inst.id);
@@ -2671,7 +2623,6 @@
       });
     });
 
-    // If cat is perched on the Cat Tree (`on_tree`), elevate visual Y and sort right in front of the tree
     let catDrawX = STATE.catPos.x * w;
     let catDrawY = STATE.catPos.y * h;
     let catSortY = catDrawY + 2;
@@ -2730,39 +2681,35 @@
         const py = p.y * h;
         const wobble = Math.sin(timeSec * 4 + idx * 1.7) * 3;
 
-        roomCtx.save();
-        roomCtx.translate(px, py);
+        ctx.save();
+        ctx.translate(px, py);
 
-        // High-contrast badge circle so it stands out against any furniture or rug
-        roomCtx.fillStyle = "rgba(255, 248, 240, 0.92)";
-        roomCtx.strokeStyle = "#D97706";
-        roomCtx.lineWidth = 2.5;
-        roomCtx.beginPath();
-        roomCtx.ellipse(0, 0, 22, 16, 0, 0, Math.PI * 2);
-        roomCtx.fill();
-        roomCtx.stroke();
+        ctx.fillStyle = "rgba(255, 248, 240, 0.92)";
+        ctx.strokeStyle = "#D97706";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 22, 16, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
 
-        // Animated stink wavy lines
-        roomCtx.strokeStyle = "#84CC16";
-        roomCtx.lineWidth = 2;
+        ctx.strokeStyle = "#84CC16";
+        ctx.lineWidth = 2;
         for (let s = -1; s <= 1; s += 2) {
-          roomCtx.beginPath();
-          roomCtx.moveTo(s * 8, -14 + wobble * 0.5);
-          roomCtx.quadraticCurveTo(s * 12, -22, s * 6, -28 + wobble);
-          roomCtx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(s * 8, -14 + wobble * 0.5);
+          ctx.quadraticCurveTo(s * 12, -22, s * 6, -28 + wobble);
+          ctx.stroke();
         }
 
-        // Poop icon
-        roomCtx.font = "24px sans-serif";
-        roomCtx.textAlign = "center";
-        roomCtx.textBaseline = "middle";
-        roomCtx.fillText("💩", 0, -2 + wobble * 0.3);
+        ctx.font = "24px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("💩", 0, -2 + wobble * 0.3);
 
-        roomCtx.restore();
+        ctx.restore();
       });
     }
 
-    // Draw Comb / Brush Tool or Interactive Toy at pointer when active!
     if (STATE.toyActive && STATE.cursorCanvasPos.active) {
       drawToyCursor(ctx, STATE.cursorCanvasPos.x, STATE.cursorCanvasPos.y, STATE.activeToyId || "toy_yarn", timeSec);
     } else if (STATE.brushActive && STATE.cursorCanvasPos.active) {
@@ -2770,7 +2717,6 @@
     }
   }
 
-  // Draw Toy Prop in front of cat or held in hand cursor
   function drawMiniToyProp(ctx, toyId, x, y, timeSec) {
     ctx.save();
     ctx.translate(x, y);
@@ -2844,7 +2790,6 @@
     ctx.save();
     ctx.translate(x, y);
     if (toyId === "toy_wand") {
-      // Teaser Wand Stick + Dangling String + Feathers
       const swing = Math.sin(timeSec * 12) * 14;
       ctx.strokeStyle = "#78350F";
       ctx.lineWidth = 4;
@@ -2872,7 +2817,6 @@
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(-0.45);
-    // Comb Handle
     ctx.fillStyle = "#FF758F";
     ctx.strokeStyle = "#C9184A";
     ctx.lineWidth = 2.5;
@@ -2880,13 +2824,11 @@
     ctx.roundRect(-8, 6, 16, 32, 7);
     ctx.fill();
     ctx.stroke();
-    // Brush Pad
     ctx.fillStyle = "#FFE5EC";
     ctx.beginPath();
     ctx.ellipse(0, -8, 24, 16, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-    // Comb Bristles / Pins
     ctx.strokeStyle = "#9D174D";
     ctx.lineWidth = 2;
     for (let bx = -14; bx <= 14; bx += 7) {
@@ -2961,7 +2903,6 @@
     STATE.cursorCanvasPos = { x, y, active: true };
     STATE.strokeAccumDist = 0;
 
-    // Direct tap on any floor poop 💩 cleans it immediately!
     if (STATE.poops && STATE.poops.length > 0) {
       for (let i = STATE.poops.length - 1; i >= 0; i--) {
         const px = STATE.poops[i].x * w;
@@ -2977,18 +2918,15 @@
     const catVisualX = STATE.catPos.x * w;
     const distToCat = Math.hypot(x - catVisualX, y - catVisualY);
 
-    // If pointer is on the cat:
     if (distToCat <= 68) {
       STATE.selectedFurnUid = null;
       updateSelectionToolbar();
 
-      // If "Move Cat Mode" is explicitly enabled and brush/toy are off, allow dragging the cat's position
       if (STATE.moveCatMode && !STATE.brushActive && !STATE.toyActive) {
         STATE.draggingTarget = { type: "cat", uid: "cat", x: catVisualX, y: catVisualY };
         STATE.dragOffsetX = catVisualX - x;
         STATE.dragOffsetY = catVisualY - y;
       } else {
-        // Default: Dragging across the cat strokes (pets) it, brushes it, or plays with toy!
         STATE.pointerDownOnCat = true;
         if (STATE.toyActive) {
           triggerCatToyPlay(catVisualX, catVisualY);
@@ -3001,7 +2939,6 @@
       return;
     }
 
-    // Otherwise check furniture if furniture layout drag mode is open
     if (STATE.dragMode && !STATE.brushActive && !STATE.toyActive) {
       const candidates = [];
       STATE.placedFurniture.forEach(inst => {
@@ -3056,29 +2993,30 @@
       if (STATE.strokeAccumDist >= 46) {
         STATE.strokeAccumDist = 0;
         if (STATE.toyActive) {
-          triggerCatToyPlay(x, y);
+          triggerCatToyPlay(catVisualX, catVisualY);
         } else if (STATE.brushActive) {
-          triggerCatBrushStroke(x, y);
+          triggerCatBrushStroke(catVisualX, catVisualY);
         } else {
-          triggerCatStrokePet(x, y);
+          triggerCatStrokePet(catVisualX, catVisualY);
         }
       }
       return;
     }
 
     if (!STATE.draggingTarget) return;
-
     STATE.dragMoved = true;
-    const nx = Math.max(0.12, Math.min(0.88, (x + STATE.dragOffsetX) / w));
-    const ny = Math.max(0.18, Math.min(0.88, (y + STATE.dragOffsetY) / h));
+
+    const newX = Math.max(0.10, Math.min(0.90, (x + STATE.dragOffsetX) / w));
+    const newY = Math.max(0.18, Math.min(0.88, (y + STATE.dragOffsetY) / h));
 
     if (STATE.draggingTarget.type === "cat") {
-      STATE.catPos.x = nx;
-      STATE.catPos.y = ny;
-      STATE.catPose = "idle";
-    } else if (STATE.draggingTarget.inst) {
-      STATE.draggingTarget.inst.x = nx;
-      STATE.draggingTarget.inst.y = ny;
+      STATE.catPos.x = newX;
+      STATE.catPos.y = newY;
+      STATE.targetX = newX;
+      STATE.targetY = newY;
+    } else if (STATE.draggingTarget.type === "furn" && STATE.draggingTarget.inst) {
+      STATE.draggingTarget.inst.x = newX;
+      STATE.draggingTarget.inst.y = newY;
     }
   });
 
@@ -3100,16 +3038,31 @@
     }
   });
 
-  // Rotate Selected Furniture Button
+  // Rotate Selected Furniture Button (4-direction rotation, auto-selects last placed if none selected)
   document.getElementById("btn-rotate-sel").addEventListener("click", () => {
-    if (!STATE.selectedFurnUid) return;
-    const inst = STATE.placedFurniture.find(f => f.uid === STATE.selectedFurnUid);
-    if (inst) {
-      SoundSystem.playClick();
-      inst.flip = !inst.flip;
-      saveCurrentBreedState();
-      showToast("🔄 已將家具 2.5D 左右轉向！");
+    SoundSystem.playClick();
+    let inst = STATE.selectedFurnUid
+      ? STATE.placedFurniture.find(f => f.uid === STATE.selectedFurnUid)
+      : null;
+
+    if (!inst && STATE.placedFurniture.length > 0) {
+      inst = STATE.placedFurniture[STATE.placedFurniture.length - 1];
+      STATE.selectedFurnUid = inst.uid;
     }
+
+    if (!inst) {
+      showToast("🛋️ 房間目前沒有家具可轉向喔！");
+      return;
+    }
+
+    const curRot = typeof inst.rot === "number" ? inst.rot : (inst.flip ? 1 : 0);
+    inst.rot = (curRot + 1) % 4;
+    inst.flip = (inst.rot % 2) === 1;
+    updateSelectionToolbar();
+    saveCurrentBreedState();
+    const meta = CATALOG.find(i => i.id === inst.id);
+    const dirLabels = ["左牆向", "右牆向", "斜向A", "斜向B"];
+    showToast(`🔄 已將【${meta ? meta.name : "家具"}】轉向為：${dirLabels[inst.rot]}！`);
   });
 
   // Store Selected Furniture Back to Inventory
@@ -3183,7 +3136,7 @@
     document.getElementById("cat-status-bubble").textContent = "💬 沙沙沙～用梳子梳毛好舒服，毛髮變得超蓬鬆柔順喵 🪮✨";
   }
 
-  // Interactive Toy Play & Random Toy Breakage System (使用玩具跟貓咪互動 有機率會使玩具損壞 + 專屬玩玩具動作)
+  // Interactive Toy Play & Random Toy Breakage System
   function triggerCatToyPlay(px, py) {
     if (STATE.isSleeping) {
       showToast("🌙 貓咪正在關燈睡覺，先開燈喚醒再陪牠玩玩具吧！");
@@ -3207,7 +3160,6 @@
     SoundSystem.playMeow(1.18);
     SoundSystem.playGood();
 
-    // Put cat into animated pouncing/batting toy pose (`play_toy`)
     STATE.petAnimTimer = 1.6;
     STATE.catPose = "play_toy";
     STATE.catActionTimer = 5.0;
@@ -3233,7 +3185,6 @@
       text: `${toyMeta.icon}陪玩 ❤️+${gainedHearts}・EXP+8`
     });
 
-    // Check random probability of toy breaking during enthusiastic play!
     const breakProb = typeof toyMeta.breakChance === "number" ? toyMeta.breakChance : 0.2;
     if (Math.random() < breakProb) {
       STATE.inventory[validToyId] = Math.max(0, (STATE.inventory[validToyId] || 1) - 1);
@@ -3367,7 +3318,7 @@
     showToast(STATE.moveCatMode ? "🖐️ 已開啟抱貓模式：按住貓咪可拖曳移動位置！" : "💕 已切回撫摸模式：在貓咪身上拖曳等於溫柔撫摸！");
   });
 
-  // Toggle Drag Mode & Reset Positions Buttons
+  // Toggle Drag Mode Button
   document.getElementById("btn-toggle-drag").addEventListener("click", () => {
     SoundSystem.playClick();
     STATE.dragMode = !STATE.dragMode;
@@ -3377,7 +3328,7 @@
     showToast(STATE.dragMode ? "已開啟家具拖曳佈置！" : "已鎖定家具位置！");
   });
 
-  // Reincarnate / Adopt Next Generation Kitten after Old Age Passing (Preserves furniture, clothes & hearts)
+  // Reincarnate / Adopt Next Generation Kitten after Old Age Passing
   document.getElementById("btn-reincarnate-cat").addEventListener("click", () => {
     SoundSystem.playUnlock();
     STATE.isPassedAway = false;
@@ -3469,7 +3420,6 @@
       return;
     }
 
-    // Prevent infinite spamming so hearts aren't farmed in 2 minutes (30-day balance)
     if (type === "feed" && STATE.hunger >= 96) {
       showToast("🐟 貓咪肚子已經飽飽的囉！等餓一點再餵才能賺取愛心～");
       return;
@@ -3488,7 +3438,6 @@
     STATE.careEffectType = type;
     STATE.careEffectTimer = 1.2;
 
-    // Balanced 30-day economy rewards
     let earnedHearts = 5 + Math.min(6, Math.floor(STATE.placedFurniture.length / 2));
     let msg = "";
     let effectIcon = "❤️";
@@ -3651,13 +3600,17 @@
         STATE.equipped[item.cat] = item.id;
       } else if (item.cat === "furniture") {
         const jitter = (Math.random() - 0.5) * 0.08;
+        const newUid = `inst_${item.id}_${Date.now()}_${Math.floor(Math.random() * 999)}`;
         STATE.placedFurniture.push({
-          uid: `inst_${item.id}_${Date.now()}_${Math.floor(Math.random() * 999)}`,
+          uid: newUid,
           id: item.id,
           x: Math.max(0.18, Math.min(0.82, (item.defX || 0.5) + jitter)),
           y: Math.max(0.24, Math.min(0.84, (item.defY || 0.7) + jitter)),
-          flip: false
+          flip: false,
+          rot: 0
         });
+        STATE.selectedFurnUid = newUid;
+        updateSelectionToolbar();
       }
 
       updateHUD();
@@ -3726,13 +3679,17 @@
     if (act === "place") {
       SoundSystem.playClick();
       const jitter = (Math.random() - 0.5) * 0.08;
+      const newUid = `inst_${item.id}_${Date.now()}_${Math.floor(Math.random() * 999)}`;
       STATE.placedFurniture.push({
-        uid: `inst_${item.id}_${Date.now()}_${Math.floor(Math.random() * 999)}`,
+        uid: newUid,
         id: item.id,
         x: Math.max(0.18, Math.min(0.82, (item.defX || 0.5) + jitter)),
         y: Math.max(0.24, Math.min(0.84, (item.defY || 0.7) + jitter)),
-        flip: false
+        flip: false,
+        rot: 0
       });
+      STATE.selectedFurnUid = newUid;
+      updateSelectionToolbar();
       updateHUD();
       renderWorkshopItems();
       showToast(`🛋️ 已將 1 件【${item.name}】擺進房間！`);
@@ -3756,7 +3713,6 @@
   /* =========================================================================
    * 8. UI EVENT BINDINGS & MAIN LOOP
    * ========================================================================= */
-  // Breed Selection on Start Screen
   document.querySelectorAll(".breed-card").forEach(card => {
     card.addEventListener("click", () => {
       SoundSystem.playClick();
@@ -3768,7 +3724,6 @@
     });
   });
 
-  // Start Game Button
   document.getElementById("btn-start-game").addEventListener("click", () => {
     SoundSystem.init();
     SoundSystem.playClick();
@@ -3779,7 +3734,6 @@
     resizeRoomCanvas();
   });
 
-  // Switch Cat Button (Save current cat & return to breed selection screen)
   document.getElementById("btn-switch-cat").addEventListener("click", () => {
     SoundSystem.playClick();
     saveCurrentBreedState();
@@ -3789,7 +3743,6 @@
     showToast("💾 已自動保存當前貓咪進度！可切換其他貓咪！");
   });
 
-  // Mute Buttons
   function syncMuteUI() {
     const m = SoundSystem.muted;
     document.getElementById("btn-mute-start").textContent = m ? "🔇 音效：關" : "🔊 音效：開";
@@ -3804,9 +3757,102 @@
     syncMuteUI();
   });
 
-  // Workshop / Shop Modal Open & Close
+  // Save Manager Modal Bindings (Export / Import)
+  function openSaveManagerModal() {
+    SoundSystem.playClick();
+    const bundle = buildAllSavesBundle();
+    const code = encodeSaveBundle(bundle);
+    const textarea = document.getElementById("save-code-textarea");
+    if (textarea) textarea.value = code;
+    document.getElementById("modal-save-manager").classList.add("active");
+  }
+
+  document.getElementById("btn-open-save-start").addEventListener("click", openSaveManagerModal);
+  document.getElementById("btn-open-save-main").addEventListener("click", openSaveManagerModal);
+  document.getElementById("btn-close-save-modal").addEventListener("click", () => {
+    SoundSystem.playClick();
+    document.getElementById("modal-save-manager").classList.remove("active");
+  });
+
+  document.getElementById("btn-export-copy").addEventListener("click", () => {
+    SoundSystem.playGood();
+    const bundle = buildAllSavesBundle();
+    const code = encodeSaveBundle(bundle);
+    const textarea = document.getElementById("save-code-textarea");
+    textarea.value = code;
+    textarea.select();
+    textarea.setSelectionRange(0, 99999);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(() => {
+        showToast("📋 已複製存檔代碼！可貼到備忘錄保存！");
+      }).catch(() => {
+        showToast("📋 已產生存檔代碼，請長按文字框全選複製！");
+      });
+    } else {
+      try {
+        document.execCommand("copy");
+        showToast("📋 已複製存檔代碼！可貼到備忘錄保存！");
+      } catch (e) {
+        showToast("📋 已產生存檔代碼，請長按文字框全選複製！");
+      }
+    }
+  });
+
+  document.getElementById("btn-export-file").addEventListener("click", () => {
+    SoundSystem.playGood();
+    const bundle = buildAllSavesBundle();
+    const jsonStr = JSON.stringify(bundle, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const dateTag = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `three_kittens_save_${dateTag}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast("📥 已下載存檔檔案 (.json)！");
+  });
+
+  document.getElementById("btn-import-code").addEventListener("click", () => {
+    const textarea = document.getElementById("save-code-textarea");
+    try {
+      const parsed = decodeSaveString(textarea.value);
+      if (applyImportedSaveBundle(parsed)) {
+        document.getElementById("modal-save-manager").classList.remove("active");
+      }
+    } catch (e) {
+      SoundSystem.playBad();
+      showToast("❌ 存檔代碼無效，請確認是否完整複製！");
+    }
+  });
+
+  document.getElementById("input-import-file").addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const parsed = decodeSaveString(String(ev.target.result || ""));
+        if (applyImportedSaveBundle(parsed)) {
+          document.getElementById("modal-save-manager").classList.remove("active");
+        }
+      } catch (err) {
+        SoundSystem.playBad();
+        showToast("❌ 讀取存檔檔案失敗，請確認檔案格式！");
+      }
+      e.target.value = "";
+    };
+    reader.readAsText(file);
+  });
+
   document.getElementById("btn-open-workshop").addEventListener("click", () => {
     SoundSystem.playClick();
+    STATE.currentShopTab = STATE.currentShopTab || "hat";
+    document.querySelectorAll("#workshop-tabs .tab-btn").forEach(t => {
+      t.classList.toggle("active", t.getAttribute("data-cat") === STATE.currentShopTab);
+    });
     renderWorkshopItems();
     document.getElementById("modal-workshop").classList.add("active");
   });
@@ -3815,7 +3861,6 @@
     document.getElementById("modal-workshop").classList.remove("active");
   });
 
-  // Workshop Category Tabs
   document.querySelectorAll("#workshop-tabs .tab-btn").forEach(tab => {
     tab.addEventListener("click", () => {
       SoundSystem.playClick();
@@ -3826,14 +3871,12 @@
     });
   });
 
-  // Direct Care Buttons (Feed, Bath, Litter, Sleep, Medicine)
   document.getElementById("btn-mg-feed").addEventListener("click", () => performDirectCare("feed"));
   document.getElementById("btn-mg-bath").addEventListener("click", () => performDirectCare("bath"));
   document.getElementById("btn-mg-litter").addEventListener("click", () => performDirectCare("litter"));
   document.getElementById("btn-mg-sleep").addEventListener("click", () => performDirectCare("sleep"));
   document.getElementById("btn-mg-med").addEventListener("click", () => performDirectCare("med"));
 
-  // Quick Play Toy Button at Bottom Row
   document.getElementById("btn-use-toy").addEventListener("click", () => {
     const validToyId = ensureValidActiveToy();
     if (!validToyId) {
@@ -3846,7 +3889,6 @@
     triggerCatToyPlay(STATE.catPos.x * w, STATE.catPos.y * h);
   });
 
-  // Feed Treat Quick Button
   document.getElementById("btn-use-treat").addEventListener("click", () => {
     if (STATE.treatInventory <= 0) {
       SoundSystem.playBad();
@@ -3854,7 +3896,6 @@
       return;
     }
     STATE.treatInventory--;
-    // Also reduce 1 from treat inventory count if owned
     for (const tid of ["treat_pudding", "treat_mint", "treat_dried"]) {
       if ((STATE.inventory[tid] || 0) > 0) {
         STATE.inventory[tid]--;
@@ -3873,7 +3914,6 @@
     showToast("🍮 貓咪享用了美味零食！心情+22% 成長+14 ❤️+6！");
   });
 
-  // Autonomous Cat AI Behavior Selector (Sleeping without light off, jumping on Cat Tree, Scratching Board, Bed Nap)
   function chooseNextCatBehavior() {
     if (STATE.isSleeping) {
       STATE.catPose = "lie_sleep";
@@ -3887,7 +3927,6 @@
 
     const roll = Math.random();
 
-    // 1. Even with lights ON, cat will spontaneously lie down & nap (higher chance when energy < 55)
     if ((STATE.energy < 55 && Math.random() < 0.55) || roll < 0.22) {
       if (beds.length > 0 && Math.random() < 0.65) {
         const bed = beds[Math.floor(Math.random() * beds.length)];
@@ -3903,7 +3942,6 @@
       return;
     }
 
-    // 2. Jump onto Cat Tree (`on_tree`) if player placed one in the room
     if (trees.length > 0 && roll < 0.45) {
       const tree = trees[Math.floor(Math.random() * trees.length)];
       STATE.catPos.x = tree.x;
@@ -3917,7 +3955,6 @@
       return;
     }
 
-    // 3. Walk to Cat Scratcher Board and scratch claws (`scratch`)
     if (scratchers.length > 0 && roll < 0.68) {
       const scr = scratchers[Math.floor(Math.random() * scratchers.length)];
       STATE.catPos.x = scr.x;
@@ -3930,7 +3967,6 @@
       return;
     }
 
-    // 3.5 Spontaneous Toy Play (`play_toy`) if player owns any toys in inventory!
     if (getTotalToysOwned() > 0 && roll < 0.78) {
       ensureValidActiveToy();
       const toyMeta = CATALOG.find(i => i.id === STATE.activeToyId);
@@ -3941,7 +3977,6 @@
       return;
     }
 
-    // 4. Sit & Groom (`groom`)
     if (roll < 0.88) {
       STATE.catPose = "groom";
       STATE.catActionTimer = 4.5 + Math.random() * 3;
@@ -3949,7 +3984,6 @@
       return;
     }
 
-    // 5. Otherwise stroll around 2.5D floor (`walk`)
     STATE.catPose = "walk";
     STATE.targetX = 0.22 + Math.random() * 0.56;
     STATE.targetY = 0.60 + Math.random() * 0.22;
@@ -3957,7 +3991,6 @@
     STATE.catActionTimer = 4 + Math.random() * 3.5;
   }
 
-  // Main Animation Loop (2.5D Room, Autonomous Actions & 30-Day Life Cycle)
   let lastFrameTime = performance.now();
   function mainLoop(now) {
     const dt = Math.min(0.1, (now - lastFrameTime) / 1000);
@@ -3970,7 +4003,6 @@
       const h = roomCanvas.height;
       roomCtx.clearRect(0, 0, w, h);
 
-      // Autonomous Cat State Machine
       if (!STATE.draggingTarget) {
         STATE.catActionTimer -= dt;
         if (STATE.catActionTimer <= 0) {
@@ -3994,7 +4026,6 @@
         }
       }
 
-      // Poop Generation Timer (Slower & realistic)
       STATE.poopTimer += dt;
       if (STATE.poopTimer >= 55.0 && STATE.poops.length < 4 && !STATE.isSleeping) {
         STATE.poopTimer = 0;
@@ -4006,7 +4037,6 @@
         updateHUD();
       }
 
-      // 30-Day Balanced Tick every 12 seconds
       STATE.idleTimer += dt;
       if (STATE.idleTimer >= 12.0) {
         STATE.idleTimer = 0;
@@ -4023,7 +4053,6 @@
             document.getElementById("cat-status-bubble").textContent = "💬 睡飽飽自動醒來囉！充滿活力喵！";
           }
         } else if (STATE.catPose === "lie_sleep") {
-          // Daytime nap also restores energy gently without turning lights off!
           STATE.energy = Math.min(100, STATE.energy + 4);
           STATE.hunger = Math.max(8, STATE.hunger - 1);
         } else {
@@ -4057,7 +4086,6 @@
       if (STATE.careEffectTimer > 0) STATE.careEffectTimer -= dt;
       drawRoomScene(roomCtx, w, h, timeSec);
 
-      // Floating hearts & care icons animation
       for (let i = STATE.floatingHearts.length - 1; i >= 0; i--) {
         const fh = STATE.floatingHearts[i];
         fh.y += fh.vy * dt;
@@ -4074,7 +4102,6 @@
         }
       }
 
-      // Floating reward texts animation
       for (let i = STATE.floatingTexts.length - 1; i >= 0; i--) {
         const ft = STATE.floatingTexts[i];
         ft.y += ft.vy * dt;
